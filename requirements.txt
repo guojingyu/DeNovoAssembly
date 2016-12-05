@@ -1,0 +1,22 @@
+#
+####### requirements.txt #######
+#
+###### Requirements without Version Specifiers ######
+nose
+logging
+#
+###### Requirements with Version Specifiers ######
+#   See https://www.python.org/dev/peps/pep-0440/#version-specifiers
+numpy >= 1.7.1
+biopython >= 1.65
+networkx == 1.11
+matplotlib == 1.5.3
+#
+###### Refer to other requirements files ######
+#
+#
+###### A particular file ######
+#
+###### Additional Requirements without Version Specifiers ######
+#
+#
