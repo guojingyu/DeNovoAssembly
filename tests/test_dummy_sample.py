@@ -9,6 +9,8 @@ Author : Jingyu Guo
 import unittest
 
 class HW6Tests(unittest.TestCase):
+    Dummy data Example
+    ATTAGACCTGCCGGAATAC
 
     def setUp(self):
         #self.avalanche_states = ('High', 'Low', 'End')
