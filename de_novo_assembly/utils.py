@@ -58,6 +58,9 @@ def get_sequences_from_fasta_file(file, include_reverse_complement= True):
         sys.exit(1)
 
 
+def output_assembly(output_file, longest_assembly_only):
+    pass
+
 if __name__ == "__main__":
     # run the file reading
     fa_test_file = "../data/coding_challenge_data_set.fasta"
