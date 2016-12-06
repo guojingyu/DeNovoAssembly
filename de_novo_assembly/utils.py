@@ -1,14 +1,11 @@
 """
-This script is to provide utility functions, suchas functions for text
+This script is to provide utility functions, such as functions for text
 based file IO
-
 
 Author : Jingyu Guo
 """
 
 from Bio import SeqIO
-import networkx as nx
-import matplotlib.pyplot as plt
 import os.path
 import sys
 import logging
@@ -16,7 +13,7 @@ import datetime
 
 # Configure logging
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
-logging.basicConfig(filename="../logs/" + timestamp + "_denovo_assembly.log",
+logging.basicConfig(filename="../" + timestamp + "_denovo_assembly.log",
                     stream=sys.stdout,
                     level=logging.DEBUG)
 stderrLogger=logging.StreamHandler()
@@ -61,19 +58,7 @@ def get_sequences_from_fasta_file(file, include_reverse_complement= True):
         sys.exit(1)
 
 
-def visualize_graph(graph):
-    """
-
-    :param G:
-    :return:
-    """
-    nx.draw(graph, cmap=plt.get_cmap('jet'))
-    plt.show()
-    pass
-
 if __name__ == "__main__":
     # run the file reading
     fa_test_file = "../data/coding_challenge_data_set.fasta"
     get_sequences_from_fasta_file(fa_test_file)
-
-    # run the graph plot

@@ -14,23 +14,18 @@ EulerianCycle(BalancedGraph)
         afterwards Cycle <- Cycle'
     return Cycle
 
-PairedDeBruijnGraphs(paired k-mers):
-    represent every paired k-mer as an edge between its paired prefix and
-    paired suffix
-    glue all nodes with identical labels
-
-
 Author Jingyu Guo
 """
 import networkx as nx
+import matplotlib.pyplot as plt
 import logging
 import datetime
 import sys
-from eulerian import is_euler, has_euler_path, has_euler_circuit
+from eulerian import has_euler_path, has_euler_circuit
 
 # Configure logging
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
-logging.basicConfig(filename=timestamp+"_denovo_assembly.log",
+logging.basicConfig(filename="../" + timestamp+"_denovo_assembly.log",
                     stream=sys.stdout,
                     level=logging.DEBUG)
 stderrLogger=logging.StreamHandler()
@@ -38,6 +33,16 @@ stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logger = logging.getLogger(__name__)
 logger.addHandler(stderrLogger)
 
+
+def visualize_graph(graph):
+    """
+
+    :param G:
+    :return:
+    """
+    nx.draw(graph, cmap=plt.get_cmap('jet'))
+    plt.show()
+    pass
 
 class Kmer():
     def __init__(self, kmer_as_a_str):
@@ -89,8 +94,8 @@ class DeBruijnGraph():
         # check for subgraphs
         self.subgraphs = list(nx.connected_component_subgraphs(self.G))
 
-        # TODO check subgraph features
-
+        # check subgraph eulerian features
+        self.check_eulerian_features_subgraphs()
 
     def convert_read_to_kmer(self,seq):
         """
@@ -154,11 +159,18 @@ class DeBruijnGraph():
                 # then add the edge
                 self.G.add_edge((L, R), str=kmer.kmer_str)
 
-        # check if there is Euler Path exists in the graph
-        if self.mark_euler_path():
-            self.euler_path_exists = True
-        else:
-            self.euler_path_exists = False
-        assert self.euler_path_exists is not None # should never fail this one
+
+    def check_eulerian_features_subgraphs(self):
+        for subg in self.subgraphs:
+            if has_euler_circuit(subg):
+                subg['euler_circuit'] = True
+            else:
+                subg['euler_circuit'] = False
+
+            # check for Euler Path
+            subg['euler_path'],subg['euler_path_start'],subg['euler_path_end'] = has_euler_path(subg)
+
+
+
 
 
