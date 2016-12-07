@@ -28,7 +28,7 @@ To run the 50 fasta record set:
 
 The k is set to 20 for the 50 fasta record dataset for stable result. The graph plotting feature is very primitive and may not work well for large De Bruijn Graph visualization. A sample plot for the dummy data of 4 fasta records can be found here for a 17 node 5mer De Bruijn Graph for a total 19 bp assembly.
 
-![Image of dummy dataset DBG](https://)
+![Image of dummy dataset DBG](https://github.com/guojingyu/DeNovoAssembly/blob/master/dummy_data_de_bruijn.png)
 
 For all running options:  
 ```
