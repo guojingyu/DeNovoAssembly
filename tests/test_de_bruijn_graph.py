@@ -1,11 +1,11 @@
 """
-Test file reading
+Test De Bruijn Graph build
 
 Author : Jingyu Guo
 """
 
 import unittest
-from de_novo_assembly.de_bruijn_graph import DeBruijnGraph, KmerNode
+from de_novo_assembly.de_bruijn_graph import DeBruijnGraph, Kmer
 
 
 class DeBruijnGraphTests(unittest.TestCase):
@@ -20,6 +20,8 @@ class DeBruijnGraphTests(unittest.TestCase):
         self.test_seq_1_2mers = KmerNode.create_kmer(self.sequence_1,k=2)
         self.test_seq_1_3mers = KmerNode.create_kmer(self.sequence_1, k=2)
         self.test_seq_1_9mers = KmerNode.create_kmer(self.sequence_1, k=2)
+
+        self.dbg = DeBruijnGraph()
 
 
     def test_balanced_graph(self):

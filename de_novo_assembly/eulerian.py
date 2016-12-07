@@ -1,13 +1,15 @@
 """
-
+Eulerian features and functions of De Bruijn Graph
 
 Author Jingyu Guo
 """
 import networkx as nx
+import matplotlib.pyplot as plt
 import logging
 import datetime
 import sys
 import operator
+from utils import clock_now
 
 # Configure logging
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -54,16 +56,17 @@ def has_euler_path(graph):
     flag = False
     start = None
     end = None
-    for node in graph.nodes_iter():
-        node['end'] = False
-        node['start'] = False
-        if graph.degree(node) % 2 != 0:
-            if graph.in_degree(node) - 1 == graph.out_degree(node):
-                node['end'] = True
-                end = node
-            elif graph.in_degree(node) + 1 == graph.out_degree(node):
-                node['start'] = True
-                start = node
+    for n in graph.nodes_iter():
+        graph.node[n]['end'] = False
+        graph.node[n]['start'] = False
+        print n, graph.degree(n)
+        if graph.degree(n) % 2 != 0:
+            if graph.in_degree(n) - 1 == graph.out_degree(n):
+                graph.node[n]['end'] = True
+                end = n
+            elif graph.in_degree(n) + 1 == graph.out_degree(n):
+                graph.node[n]['start'] = True
+                start = n
             flag = True
     return flag, start, end
 
@@ -87,28 +90,35 @@ def eulerian_random_walk(DBG, plot_DBG_failed_assembly = False):
     assembly = []
     for subg in DBG.subgraphs:
         # nx eulerian assumes strong connection for directed graph
-        if subg['euler_circuit']:
+        if subg.graph['euler_circuit']:
             a_euler_circuit = list(nx.eulerian_circuit(subg))
             # assembly removed the last edge to source
             assembly.append(make_contig_from_path(a_euler_circuit[:-1]))
-            logger.info("Eulerian : Eulerian circuit found for the "
-                        "subgraph of De Bruijn Graph built from input "
-                        "sequence : ")
+            logger.info(clock_now() + " Eulerian : Eulerian circuit found for "
+                                     "the subgraph of De Bruijn Graph built "
+                                      "from the input sequence : ")
             logger.info(a_euler_circuit)
-        elif subg['euler_path']:
-                a_euler_path = list(find_eulerian_path(subg,
-                                                       subg['euler_path_start']))
-                assert a_euler_path[-1][1] in subg['euler_path_end']
-                assembly.append(make_contig_from_path(a_euler_path))
-                logger.info("Eulerian : Eulerian path found for the "
-                            "subgraph of De Bruijn Graph built from input "
+        elif subg.graph['euler_path']:
+            # add a temp edge here
+            # subg.add_edge(subg.graph['euler_path_end'], subg.graph[
+            #     'euler_path_start'], seq="[temp_edge]")
+            visualize_graph(subg)
+
+            a_euler_path = find_eulerian_path(subg,subg.graph[
+                'euler_path_start'])
+            # print a_euler_path[-1][1]
+            # print subg.graph['euler_path_end']
+            #assert a_euler_path[-1][1] in subg.graph['euler_path_end']
+            assembly.append(make_contig_from_path(a_euler_path))
+            logger.info(clock_now() + " Eulerian : Eulerian path found "
+                                          "for the "
+                            "subgraph of De Bruijn Graph built from the input "
                             "sequence : ")
-                logger.info(a_euler_path)
+            logger.info(a_euler_path)
         else:
             subg['eulerian'] = False
-            logger.warn("Eulerian : no Eulerian feature found for the "
-                        "subgraph of De Bruijn Graph built from input "
-                        "sequence : ")
+            logger.warn(clock_now() + " Eulerian : no Eulerian feature found "
+                                      "for the subgraph of De Bruijn Graph built from input sequence : ")
             logger.warn(subg.nodes())
             # TODO consider to export the graph here
             if plot_DBG_failed_assembly:
@@ -123,7 +133,7 @@ def find_eulerian_path(graph, start):
     :param start: starting node
     :return:
     """
-    if not graph['euler_path']:
+    if not graph.graph['euler_path']:
         raise RuntimeError("Eulerian : call Eulerian path method on "
                            "graph/subgraph having no Eulerian path: " +
                            graph.nodes())
@@ -154,4 +164,16 @@ def make_contig_from_path(path):
     :param path: a list of kmers
     :return: a string of sequence
     """
-    return reduce(lambda x, y: x + y[-1], [l + r[-1] for l, r in path])
+    if path:
+        return reduce(lambda x, y: x + y[-1], [l + r[-1] for l, r in path])
+    else:
+        return ''
+
+def visualize_graph(graph):
+    """
+
+    :param G:
+    :return:
+    """
+    nx.draw(graph, with_labels = True, cmap=plt.get_cmap('jet'))
+    plt.show()

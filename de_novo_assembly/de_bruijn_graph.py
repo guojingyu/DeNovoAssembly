@@ -22,6 +22,7 @@ import logging
 import datetime
 import sys
 from eulerian import has_euler_path, has_euler_circuit
+from utils import clock_now
 
 # Configure logging
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d")
@@ -40,9 +41,9 @@ def visualize_graph(graph):
     :param G:
     :return:
     """
-    nx.draw(graph, cmap=plt.get_cmap('jet'))
+    nx.draw(graph, with_labels = True, cmap=plt.get_cmap('jet'))
     plt.show()
-    pass
+
 
 class Kmer():
     def __init__(self, kmer_as_a_str):
@@ -52,11 +53,11 @@ class Kmer():
         the
         :param kmer: a str of the kmer
         """
-        self.kmer = kmer_as_a_str
-        self.k = len(self.kmer)
+        self.kmer_str = kmer_as_a_str
+        self.k = len(self.kmer_str)
         # create the (k-1)-mers as De Bruijn node
-        self.l_node = self.kmer[:-1]
-        self.r_node = self.kmer[1:]
+        self.l_node = self.kmer_str[:-1]
+        self.r_node = self.kmer_str[1:]
 
 
 class DeBruijnGraph():
@@ -67,21 +68,24 @@ class DeBruijnGraph():
     def __init__(self, sequence_dict, k = 3, *args, **kwargs):
         """
         constructor
-        :param sequence_dict: sequence dict
+        :param sequence_dict: sequence dict of Biopython Seq objects
         :param k: k for kmer length
         :param args:
         :param kwargs:
         """
-        self.sequences = sequence_dict.values()
+        self.sequences = [seq_obj.seq for seq_obj in sequence_dict.values()]
         min_len = len(min(self.sequences, key=len))
         if k < 2: # if k is smaller than 2 the assembly does not work
-            logger.info("DBG : k is too small : " + str(k))
-            raise Exception('DBG : k is too small : ' + str(k))
+            logger.error(clock_now() +
+                        " DBG : k is too small : " + str(k))
+            raise ValueError("DBG : k is too small : " + str(k))
         # or if k is larger than the min length of given sequences
         elif k >= min_len:
-            logger.info("DBG : k is larger than the min length of provide "
+            logger.error(clock_now() + " DBG : k is larger than the min "
+                                       "length of provide "
                         "sequence : " + str(k))
-            raise Exception("DBG : k is larger than the min length of provide "
+            raise ValueError("DBG : k is larger than the min length of "
+                             "provide "
                         "sequence : " + str(k))
         else:
             self.k = k
@@ -90,23 +94,34 @@ class DeBruijnGraph():
 
         # construct the graph
         self.build_DBG()
+        logger.info(clock_now() + " DBG : De Bruijn Graph is made from input "
+                                  "sequences ...")
 
         # check for subgraphs
-        self.subgraphs = list(nx.connected_component_subgraphs(self.G))
+        #subgraph_iter = DeBruijnGraph.extract_directed_subgraphs(self.G)
+        #nx.strongly_connected_component_subgraphs(self.G)
+        self.subgraphs = DeBruijnGraph.extract_directed_subgraphs(self.G)
+
+        logger.info(clock_now() + " DBG : ... including " + str(len(
+            self.subgraphs)) + " strongly connected subgraphs.")
 
         # check subgraph eulerian features
         self.check_eulerian_features_subgraphs()
+        logger.info(clock_now() + " DBG : checked subgraphs for their "
+                                  "Eulerian features.")
 
     def convert_read_to_kmer(self,seq):
         """
         method to convert the reads into kmers
         Using generator here to save memory
-        :return: an iterator
+        :return: an list of Kmer obj
         """
         # convert sequence into kmers
         seq = DeBruijnGraph.legit_DNA_base_filter(seq)
-        yield (Kmer(seq[i:i + self.k]) for i in xrange(
-                len(seq) - self.k + 1))
+        return [Kmer(seq[i:i + self.k]) for i in xrange(
+                len(seq) - self.k + 1)]
+        # TODO a generator using yield is probably more memory efficient here
+        #  but the code has to be remodeled further
 
 
     @staticmethod
@@ -118,6 +133,7 @@ class DeBruijnGraph():
         :return: filter seq of the DNA with only ATCG and to uppercase
         """
         return "".join([base for base in seq.upper() if base in "ATCG"])
+
 
     def build_DBG(self):
         """
@@ -148,27 +164,35 @@ class DeBruijnGraph():
         """
         for seq in self.sequences:
             for kmer in self.convert_read_to_kmer(seq):
-                L, R = None, None
-                if kmer.l_node not in self.G:
-                    self.G.add_node(kmer.l_node, start=False, end=False)
-                L = kmer.l_node
-                if kmer.r_node not in self.G:
-                    self.G.add_node(kmer.r_node, start=False, end=False)
-                R = kmer.r_node
+                if kmer.l_node not in self.G.nodes():
+                    self.G.add_node(kmer.l_node)
+                if kmer.r_node not in self.G.nodes():
+                    self.G.add_node(kmer.r_node)
 
                 # then add the edge
-                self.G.add_edge((L, R), str=kmer.kmer_str)
+                self.G.add_edge(kmer.l_node, kmer.r_node, seq=kmer.kmer_str)
 
+
+    @staticmethod
+    def extract_directed_subgraphs(directed_graph):
+        return [directed_graph.subgraph(nx.topological_sort(subg)) for subg in
+         nx.weakly_connected_component_subgraphs(directed_graph)]
+        # undirected = directed_graph.to_undirected()
+        # g.subgraph(nx.shortest_path(g.to_undirected(), 'B'))
 
     def check_eulerian_features_subgraphs(self):
+        """
+        A class method to check the eulerian features for subgraphs
+        :return: none
+        """
         for subg in self.subgraphs:
             if has_euler_circuit(subg):
-                subg['euler_circuit'] = True
+                subg.graph['euler_circuit'] = True
             else:
-                subg['euler_circuit'] = False
+                subg.graph['euler_circuit'] = False
 
             # check for Euler Path
-            subg['euler_path'],subg['euler_path_start'],subg['euler_path_end'] = has_euler_path(subg)
+            subg.graph['euler_path'],subg.graph['euler_path_start'],subg.graph['euler_path_end'] = has_euler_path(subg)
 
 
 

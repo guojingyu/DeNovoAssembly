@@ -1,2 +1,9 @@
 **/.idea/*
 data/coding_challenge_data_set.txt
+de_novo_assembly/de_bruijn_graph.pyc de_novo_assembly/eulerian.pyc de_novo_assembly/utils.pyc
+2016-12-06_denovo_assembly.log
+de_novo_assembly/de_bruijn_graph.pyc de_novo_assembly/eulerian.pyc de_novo_assembly/utils.pyc
+de_novo_assembly/de_bruijn_graph.pyc
+de_novo_assembly/eulerian.pyc
+de_novo_assembly/utils.pyc
+output_DNA_assembly.txt
