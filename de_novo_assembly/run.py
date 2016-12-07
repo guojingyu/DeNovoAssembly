@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 This piece of script contains the entry method to run the package as a
 DNA sequence assembler
@@ -25,42 +27,19 @@ stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logger = logging.getLogger(__name__)
 logger.addHandler(stderrLogger)
 
-def main():
+def run(inputfastafile, outputfile, kmerlength,
+        reverse_complement = False, graph = False,
+        longest_assembly_only = False, print_to_console =
+        True):
     """
     main method to run the DNA sequence assembly
     :return:
     """
-    # get input parameters
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--inputfastafile',
-                        help="fasta formatted text file containing the sequences for assembly",
-                        default='../data/dummy_data.fasta')
-    parser.add_argument('--include_reverse_complement', action='store_true',
-                        help="include to the reverse complement sequences of the fasta file sequence")
-    parser.add_argument('-k', '--kmerlength',
-                        help="parameter k to control the length of kmer as the edge of De Bruijn Graph",
-                        default=4)
-    parser.add_argument('--graph', action='store_true',
-                        help="plot the De Bruijn Graph constructed from kmer of the input sequence")
-    parser.add_argument('-o', '--outputfile',
-                        help="output assembled DNA sequences into file with "
-                             "input name and time stamp appended",
-                        default='../output_DNA_assembly.txt')
-    parser.add_argument('--output_longest_assembly', action='store_true',
-                        help="output the longest assembled DNA sequence. If "
-                             "more than one same longest DNA sequence found, "
-                             "return the first one in rank")
-    parser.add_argument('--print_to_console', action='store_true',
-                        help="true or false to print assembled DNA sequence to "
-                             "console")
-
-    args = parser.parse_args()
-
-    logger.info(datetime.datetime.now().strftime("%H:%M:%S") +
+    logger.info(clock_now() +
                 " Beginning: Begin assemble DNA sequences ... ")
     # read in fasta file
     try:
-        seq_dict = get_sequences_from_fasta_file(args.inputfastafile)
+        seq_dict = get_sequences_from_fasta_file(inputfastafile)
     except IOError as err:
         logger.error(clock_now() + " Exit: " + err.message + ". Quitted.")
         sys.exit(1)
@@ -69,13 +48,13 @@ def main():
         sys.exit(1)
 
     # if needed to include the reverse complement sequences
-    if args.include_reverse_complement:
+    if reverse_complement:
         seq_dict = include_reverse_complement(seq_dict)
 
     # build the De Bruijn Graph
     try:
-        dbg = DeBruijnGraph(seq_dict,args.kmerlength)
-        if args.graph:
+        dbg = DeBruijnGraph(seq_dict,int(kmerlength))
+        if graph:
             visualize_graph(dbg.G)
     except ValueError as err:
         print err.message
@@ -99,22 +78,65 @@ def main():
 
     # output to file if needed or
     if len(assembly) != 0:
-        output_assembly(assembly,args.outputfile,args.output_longest_assembly)
+        output_assembly(assembly,outputfile,longest_assembly_only)
     else:
         print "Exit: no assembled DNA returned. Quitted."
         logger.warn(clock_now() + " Exit: no assembled DNA returned. Quitted.")
         sys.exit(1)
 
-
     # print to screen
-    if args.print_to_console:
-        if args.longest_assembly_only:
+    if print_to_console:
+        if longest_assembly_only:
             longest_seq = max(assembly, key=len)
             print(longest_seq)
+            print(len(longest_seq))
         else:
             for sequence in sorted(assembly,key=len,reverse=True):
-                print(sequence + '\n')
+                print("Assembly Results with length :")
+                print(sequence)
+                print(len(sequence))
+    # log the termination
+    logger.info(clock_now() +
+                " Done.")
 
+    return assembly
 
 if __name__ == "__main__":
-    main()
+    # get input parameters
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--inputfastafile',
+                        help="fasta formatted text file containing the sequences for assembly",
+                        default='../data/dummy_data.fasta')
+    parser.add_argument('--reverse_complement', action='store_true',
+                        help="include to the reverse complement sequences of the fasta file sequence",
+                        default=False)
+    parser.add_argument('-k', '--kmerlength',
+                        help="parameter k to control the length of kmer as the edge of De Bruijn Graph",
+                        default=6)
+    parser.add_argument('--graph', action='store_true',
+                        help="plot the De Bruijn Graph constructed from kmer of the input sequence",
+                        default=False)
+    parser.add_argument('-o', '--outputfile',
+                        help="output assembled DNA sequences into file with "
+                             "input name and time stamp appended",
+                        default='./output_DNA_assembly.txt')
+    parser.add_argument('--output_longest_assembly', action='store_true',
+                        help="output the longest assembled DNA sequence. If "
+                             "more than one same longest DNA sequence found, "
+                             "return the first one in rank",
+                        default=False)
+    parser.add_argument('--print_to_console', action='store_true',
+                        help="true or false to print assembled DNA sequence to "
+                             "console",
+                        default=False)
+
+    args = parser.parse_args()
+
+    assembly = run(args.inputfastafile, args.outputfile, args.kmerlength,
+                   args.reverse_complement, args.graph,
+                   args.output_longest_assembly, args.print_to_console)
+
+    # print seq and length
+    # for sequence in sorted(assembly, key=len, reverse=True):
+    #     print(sequence + '\n')
+    #     print(len(sequence))

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 This script contains a class for De Bruijn Graph
 DeBruijn(k-mers)
@@ -98,8 +100,6 @@ class DeBruijnGraph():
                                   "sequences ...")
 
         # check for subgraphs
-        #subgraph_iter = DeBruijnGraph.extract_directed_subgraphs(self.G)
-        #nx.strongly_connected_component_subgraphs(self.G)
         self.subgraphs = DeBruijnGraph.extract_directed_subgraphs(self.G)
 
         logger.info(clock_now() + " DBG : ... including " + str(len(
@@ -168,17 +168,26 @@ class DeBruijnGraph():
                     self.G.add_node(kmer.l_node)
                 if kmer.r_node not in self.G.nodes():
                     self.G.add_node(kmer.r_node)
-
-                # then add the edge
-                self.G.add_edge(kmer.l_node, kmer.r_node, seq=kmer.kmer_str)
+        if len(self.G.nodes()) > 0:
+            [self.G.add_edge(L, R) for L in self.G.nodes_iter() for R in \
+                    self.G.nodes_iter() if L[1:] == R[:-1]]
+        else:
+            logger.error(clock_now() + " DBG : Error in DBG build -- zero "
+                                       "nodes in graph.")
+            raise ValueError("DBG : Error in DBG build -- zero nodes in graph.")
 
 
     @staticmethod
     def extract_directed_subgraphs(directed_graph):
-        return [directed_graph.subgraph(nx.topological_sort(subg)) for subg in
-         nx.weakly_connected_component_subgraphs(directed_graph)]
-        # undirected = directed_graph.to_undirected()
-        # g.subgraph(nx.shortest_path(g.to_undirected(), 'B'))
+        """
+        This is a method to extract isolated components from the directed
+        graph, in to a list of subgraphs.
+        :param directed_graph: the DBG build
+        :return: a list of subgraphs
+        """
+
+        return [directed_graph.subgraph(subg) for subg in
+                nx.weakly_connected_component_subgraphs(directed_graph)]
 
     def check_eulerian_features_subgraphs(self):
         """

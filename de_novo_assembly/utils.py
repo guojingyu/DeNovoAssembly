@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 This script is to provide utility functions, such as functions for text
 based file IO

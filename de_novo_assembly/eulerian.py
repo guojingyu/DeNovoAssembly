@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Eulerian features and functions of De Bruijn Graph
 
@@ -21,14 +23,6 @@ stderrLogger.setFormatter(logging.Formatter(logging.BASIC_FORMAT))
 logger = logging.getLogger(__name__)
 logger.addHandler(stderrLogger)
 
-
-# def is_euler(graph):
-#     """
-#     Return true or false. Every node in graph must have equal in degree and out
-#     :param graph: graph as nx graph obj
-#     :return: true or false for graph is Eulerian
-#     """
-#     return has_euler_circuit(graph) or has_euler_path(graph)
 
 def has_euler_circuit(graph):
     """
@@ -59,19 +53,18 @@ def has_euler_path(graph):
     for n in graph.nodes_iter():
         graph.node[n]['end'] = False
         graph.node[n]['start'] = False
-        print n, graph.degree(n)
         if graph.degree(n) % 2 != 0:
-            if graph.in_degree(n) - 1 == graph.out_degree(n):
+            if graph.out_degree(n) == graph.in_degree(n) - 1:
                 graph.node[n]['end'] = True
                 end = n
-            elif graph.in_degree(n) + 1 == graph.out_degree(n):
+            elif graph.in_degree(n) == graph.out_degree(n) - 1:
                 graph.node[n]['start'] = True
                 start = n
             flag = True
     return flag, start, end
 
 
-def eulerian_random_walk(DBG, plot_DBG_failed_assembly = False):
+def eulerian_random_walk(DBG):
     """
     the method to reconstruct the genome
 
@@ -100,23 +93,17 @@ def eulerian_random_walk(DBG, plot_DBG_failed_assembly = False):
             logger.info(a_euler_circuit)
         elif subg.graph['euler_path']:
             # add a temp edge here
-            # subg.add_edge(subg.graph['euler_path_end'], subg.graph[
-            #     'euler_path_start'], seq="[temp_edge]")
-            visualize_graph(subg)
-
-            a_euler_path = find_eulerian_path(subg,subg.graph[
-                'euler_path_start'])
-            # print a_euler_path[-1][1]
-            # print subg.graph['euler_path_end']
-            #assert a_euler_path[-1][1] in subg.graph['euler_path_end']
+            subg.add_edge(subg.graph['euler_path_end'], subg.graph[
+                'euler_path_start'], seq="[temp_edge]")
+            a_euler_path = list(find_eulerian_path(subg,subg.graph[
+                'euler_path_start']))[:-1]
             assembly.append(make_contig_from_path(a_euler_path))
             logger.info(clock_now() + " Eulerian : Eulerian path found "
-                                          "for the "
-                            "subgraph of De Bruijn Graph built from the input "
+                                          "for the subgraph of De Bruijn Graph built from the input "
                             "sequence : ")
             logger.info(a_euler_path)
         else:
-            subg['eulerian'] = False
+            subg.graph['eulerian'] = False
             logger.warn(clock_now() + " Eulerian : no Eulerian feature found "
                                       "for the subgraph of De Bruijn Graph built from input sequence : ")
             logger.warn(subg.nodes())
