@@ -143,6 +143,7 @@ def find_eulerian_path(graph, start):
             stack.append(get_node(random_edge))
             copy_graph.remove_edge(*random_edge)
 
+
 def make_contig_from_path(path):
     """
     Assemble the sequence from list of (l_node, r_node)

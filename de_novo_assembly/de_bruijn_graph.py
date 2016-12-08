@@ -120,8 +120,6 @@ class DeBruijnGraph():
         seq = DeBruijnGraph.legit_DNA_base_filter(seq)
         return [Kmer(seq[i:i + self.k]) for i in xrange(
                 len(seq) - self.k + 1)]
-        # TODO a generator using yield is probably more memory efficient here
-        #  but the code has to be remodeled further
 
 
     @staticmethod
@@ -202,8 +200,3 @@ class DeBruijnGraph():
 
             # check for Euler Path
             subg.graph['euler_path'],subg.graph['euler_path_start'],subg.graph['euler_path_end'] = has_euler_path(subg)
-
-
-
-
-
