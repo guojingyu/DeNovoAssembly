@@ -5,7 +5,7 @@ This repo contains an implementation of a solution to DNA sequence assembly prob
 (For further details, please read docs/Description.md)
 
 ###Prerequisites
-The following only represents one set of configurations of the libraries used in development.
+The following only represents one possible set of versions of required libraries, which is used in development.
 ```
 python == 2.7.11
 nose == 1.3.7
