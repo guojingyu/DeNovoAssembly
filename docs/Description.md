@@ -7,9 +7,9 @@ This project is a simple implementation for solving DNA sequence de novo assembl
 The DBG method avoided (to some extent) overcollapsed repeats problem that might be introduced by the overlapping based methods (overlap-layout-consensus). As well it is used more widely in NGS based assembly applications, thus it was chosen for this project.
 
 ###Results
- For the dummy_data.fasta file, a 19 bp long DNA assembly can be found with a k > 5, as **ATTAGACCTGCCGGAATAC**, which is the same as reference answer.
+ For the dummy_data.fasta file, a 19 bp long DNA assembly can be found with a k > 5, as __ATTAGACCTGCCGGAATAC__, which is the same as reference answer.
 
-For the provided 50 fasta sample file, when k is set to 12-15, the output assembled DNA sequence has closely ranged around 20000 bp long but not unique. When the k is set to larger than 20, it would be more stablized to a sequence of **19914** bp long.
+For the provided 50 fasta sample file, when k is set to 12-15, the output assembled DNA sequence has closely ranged around 20000 bp long but not unique. When the k is set to larger than 20, it would be stablized to a sequence of __19914__ bp long.
 
 It is also noticeable, for the provided 50 fasta sample file, that the running time increased when k is getting larger. This holds true at least when k is still relatively small (20-30) than the ~1000 length of the fasta records. It may take less than 1 minute to finish if k = 20, but more than 1 minute to finish at 30 (single threaded on a typical laptop with i7 processor).
 
@@ -20,7 +20,7 @@ It is also noticeable, for the provided 50 fasta sample file, that the running t
 4. The k of kmer should not be longer than the minimum length of given sequences and larger than 2.
 5. More than one contigs are assumed as well (or given sequences cannot be assembled into one piece), but not well tested.
 
-####Kmer, De Bruijn Graph and Eulerian
+###Kmer, De Bruijn Graph and Eulerian
 Each kmer, as a substring of a DNA sequence of fixed length of k (positive integer), represents an edge in the DBG. The prefix and suffix (k-1)mer of each kmer form two nodes for the edge.
 
 DBG is formed as a multi directed graph, which allows more than one edges between a pair of nodes or more than one loop on a single nodes. Although permited multiple edges, in DBG, the nodes ((k-1)mers) are unique (in terms of DNA sequence/string it represents).

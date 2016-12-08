@@ -7,6 +7,6 @@ de_novo_assembly/de_bruijn_graph.pyc
 de_novo_assembly/eulerian.pyc
 de_novo_assembly/utils.pyc
 output_DNA_assembly.txt
-2016-12-07_denovo_assembly.log
+*_denovo_assembly.log
 de_novo_assembly/__init__.pyc
 dummy_sample_test_output.txt
