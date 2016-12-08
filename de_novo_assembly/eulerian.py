@@ -97,6 +97,7 @@ def eulerian_random_walk(DBG):
                 'euler_path_start'], seq="[temp_edge]")
             a_euler_path = list(find_eulerian_path(subg,subg.graph[
                 'euler_path_start']))[:-1]
+            print a_euler_path
             assembly.append(make_contig_from_path(a_euler_path))
             logger.info(clock_now() + " Eulerian : Eulerian path found "
                                           "for the subgraph of De Bruijn Graph built from the input "
@@ -148,13 +149,4 @@ def make_contig_from_path(path):
     :param path: a list of kmers
     :return: a string of sequence
     """
-    def glue(x, y):
-        if x[-1] == y[0]:
-            return x + y[-1]
-        else:
-            raise ValueError("Error in making assembly from Eulerian path. "
-                             "The path is error as Eulerian or not intact.")
-    if path:
-        return reduce(glue,[l + r[-1] for l, r in path])
-    else:
-        return ''
+    return reduce(lambda x,y: x+y[-1],[l + r[-1] for l, r in path])

@@ -18,17 +18,17 @@ matplotlib == 1.5.3
 ###How to run the code
 To run the dummy_data.fasta:  
 ```
-python ./de_novo_assembly/run.py -i ./data/dummy_data.fasta -k 6 --print_to_console
+python ./de_novo_assembly/run.py -i ./data/dummy_data.fasta -k 6 -o ./output/dummy_data_assembly_output.txt --print_to_console
 ```
 
 To include a graph, simply add the option as '--graph':  
 ```
-python ./de_novo_assembly/run.py -i ./data/dummy_data.fasta -k 6 --print_to_console --graph
+python ./de_novo_assembly/run.py -i ./data/dummy_data.fasta -k 6 -o ./output/dummy_data_assembly_output.txt --print_to_console --graph
 ```
 
 To run the 50 fasta record set:  
 ```
-python ./de_novo_assembly/run.py -i ./data/coding_challenge_data_set.fasta -k 20 --print_to_console
+python ./de_novo_assembly/run.py -i ./data/coding_challenge_data_set.fasta -k 20 -o ./output/test_data_assembly_output.txt
 ```
 
 The k is set to 6 for the dummy dataset (works when 4<=k<=9), and 20 for the 50 fasta record dataset for stable result. The graph plotting feature is very primitive and may not work well for large De Bruijn Graph visualization. A sample plot for the dummy data of 4 fasta records can be found here for a 15 node 5mer De Bruijn Graph for a total 19 bp assembly.
