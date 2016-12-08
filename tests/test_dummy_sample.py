@@ -1,30 +1,31 @@
+#!/usr/bin/env python
+
 """
-Test sample
+Test sample dummy data
 
 Author : Jingyu Guo
 """
 
-
-
 import unittest
+from de_novo_assembly.run import run
 
-class HW6Tests(unittest.TestCase):
-    Dummy data Example
-    ATTAGACCTGCCGGAATAC
+class DummySampleTests(unittest.TestCase):
+    """
 
+    """
     def setUp(self):
-        #self.avalanche_states = ('High', 'Low', 'End')
-        pass
+        self.reference_assembly = "ATTAGACCTGCCGGAATAC"
 
+        self.inputfastafile = "../data/dummy_data.fasta"
+        self.outputfile = "../dummy_sample_test_output.txt"
+        self.kmerlength = 7
+        self.print_to_console = False
 
-    def test_viterbi_seq_ex1(self):
-        # assert
-        pass
+        self.assembly = run(self.inputfastafile, self.outputfile,
+                            self.kmerlength, self.print_to_console)
 
-    def test_viterbi_seq_ex2(self):
-        # assert
-        pass
-
+    def test_dummy_assembly_result(self):
+        assert self.assembly[0] == self.reference_assembly
 
 if __name__ == '__main__':
     unittest.main()

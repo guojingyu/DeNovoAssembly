@@ -74,6 +74,11 @@ def run(inputfastafile, outputfile, kmerlength,
         logger.error(clock_now() + " Exit: fatal errors during random walk. "
                                    "Quitted.")
         sys.exit(1)
+    except ValueError as err:
+        print "Eulerian: errors during random walk. no output can be generated."
+        logger.error(clock_now() + " Eulerian: errors during random walk. no output can be generated.")
+        logger.error(err.message)
+        sys.exit(1)
 
 
     # output to file if needed or
@@ -108,25 +113,26 @@ if __name__ == "__main__":
                         help="fasta formatted text file containing the sequences for assembly",
                         default='../data/dummy_data.fasta')
     parser.add_argument('--reverse_complement', action='store_true',
-                        help="include to the reverse complement sequences of the fasta file sequence",
+                        help="include or not. to include to the reverse "
+                             "complement sequences of the fasta file sequence",
                         default=False)
     parser.add_argument('-k', '--kmerlength',
                         help="parameter k to control the length of kmer as the edge of De Bruijn Graph",
                         default=6)
     parser.add_argument('--graph', action='store_true',
-                        help="plot the De Bruijn Graph constructed from kmer of the input sequence",
+                        help="include or not. plot the De Bruijn Graph constructed from kmer of the input sequence",
                         default=False)
     parser.add_argument('-o', '--outputfile',
                         help="output assembled DNA sequences into file with "
                              "input name and time stamp appended",
                         default='./output_DNA_assembly.txt')
     parser.add_argument('--output_longest_assembly', action='store_true',
-                        help="output the longest assembled DNA sequence. If "
-                             "more than one same longest DNA sequence found, "
+                        help="include or not. output the longest assembled "
+                             "DNA sequence. If more than one same longest DNA sequence found, "
                              "return the first one in rank",
                         default=False)
     parser.add_argument('--print_to_console', action='store_true',
-                        help="true or false to print assembled DNA sequence to "
+                        help="include or not. to print assembled DNA sequence to "
                              "console",
                         default=False)
 

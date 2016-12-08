@@ -8,8 +8,6 @@ Author : Jingyu Guo
 """
 
 from Bio import SeqIO
-from Bio import SeqRecord
-from Bio.Seq import Seq
 import os.path
 import sys
 import logging

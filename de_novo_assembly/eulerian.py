@@ -107,9 +107,6 @@ def eulerian_random_walk(DBG):
             logger.warn(clock_now() + " Eulerian : no Eulerian feature found "
                                       "for the subgraph of De Bruijn Graph built from input sequence : ")
             logger.warn(subg.nodes())
-            # TODO consider to export the graph here
-            if plot_DBG_failed_assembly:
-                pass
     return assembly
 
 
@@ -151,16 +148,13 @@ def make_contig_from_path(path):
     :param path: a list of kmers
     :return: a string of sequence
     """
+    def glue(x, y):
+        if x[-1] == y[0]:
+            return x + y[-1]
+        else:
+            raise ValueError("Error in making assembly from Eulerian path. "
+                             "The path is error as Eulerian or not intact.")
     if path:
-        return reduce(lambda x, y: x + y[-1], [l + r[-1] for l, r in path])
+        return reduce(glue,[l + r[-1] for l, r in path])
     else:
         return ''
-
-def visualize_graph(graph):
-    """
-
-    :param G:
-    :return:
-    """
-    nx.draw(graph, with_labels = True, cmap=plt.get_cmap('jet'))
-    plt.show()

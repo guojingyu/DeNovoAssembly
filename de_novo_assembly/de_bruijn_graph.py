@@ -39,7 +39,7 @@ logger.addHandler(stderrLogger)
 
 def visualize_graph(graph):
     """
-
+    A naive method to plot graph
     :param G:
     :return:
     """
@@ -77,7 +77,7 @@ class DeBruijnGraph():
         """
         self.sequences = [seq_obj.seq for seq_obj in sequence_dict.values()]
         min_len = len(min(self.sequences, key=len))
-        if k < 2: # if k is smaller than 2 the assembly does not work
+        if k <= 2: # if k is smaller than 2 the assembly does not work
             logger.error(clock_now() +
                         " DBG : k is too small : " + str(k))
             raise ValueError("DBG : k is too small : " + str(k))
