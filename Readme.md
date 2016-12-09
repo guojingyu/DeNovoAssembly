@@ -2,6 +2,8 @@
 
 This repo contains an implementation of a solution to DNA sequence assembly problem. The is based on Euler Walk on De Bruijn Graph constructed using kmer representation. 
 
+This branch of repo named NonMutliDiGraph utilized a DiGraph class in networkx so that only one edge is allowed between two nodes. This would allow the edge to be added into the De Bruijn Graph in a more efficient manner and thus reduce the runtime greatly.
+
 (For further details, please read docs/Description.md)
 
 ###Prerequisites

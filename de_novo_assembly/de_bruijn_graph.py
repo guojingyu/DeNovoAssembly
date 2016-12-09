@@ -92,7 +92,7 @@ class DeBruijnGraph():
         else:
             self.k = k
 
-        self.G = nx.MultiDiGraph()
+        self.G = nx.DiGraph()
 
         # construct the graph
         self.build_DBG()
@@ -166,13 +166,7 @@ class DeBruijnGraph():
                     self.G.add_node(kmer.l_node)
                 if kmer.r_node not in self.G.nodes():
                     self.G.add_node(kmer.r_node)
-        if len(self.G.nodes()) > 0:
-            [self.G.add_edge(L, R) for L in self.G.nodes_iter() for R in \
-                    self.G.nodes_iter() if L[1:] == R[:-1]]
-        else:
-            logger.error(clock_now() + " DBG : Error in DBG build -- zero "
-                                       "nodes in graph.")
-            raise ValueError("DBG : Error in DBG build -- zero nodes in graph.")
+                self.G.add_edge(kmer.l_node, kmer.r_node)
 
 
     @staticmethod

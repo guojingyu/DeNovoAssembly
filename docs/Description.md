@@ -6,12 +6,14 @@ This project is a simple implementation for solving DNA sequence de novo assembl
 
 The DBG method avoided (to some extent) overcollapsed repeats problem that might be introduced by the overlapping based methods (overlap-layout-consensus). As well it is used more widely in NGS based assembly applications, thus it was chosen for this project.
 
+This branch of repo named NonMutliDiGraph utilized a DiGraph class instead of MultiDiGraph in networkx so that only one edge is allowed between two nodes. This would allow the edge to be added into the De Bruijn Graph in a more efficient manner and thus reduce the runtime greatly than the master branch. 
+
 ###Results
  For the dummy_data.fasta file, a 19 bp long DNA assembly can be found with a k > 5, as __ATTAGACCTGCCGGAATAC__, which is the same as reference answer.
 
 For the provided 50 fasta sample file, when k is set to 12-15, the output assembled DNA sequence has closely ranged around 20000 bp long but not unique. When the k is set to larger than 20, it would be stablized to a sequence of __19914__ bp long.
 
-It is also noticeable, for the provided 50 fasta sample file, that the running time increased when k is getting larger. This holds true at least when k is still relatively small (20-30) than the ~1000 length of the fasta records. It may take ~2 minute to finish if k = 20, and similarly or slightly longer to finish at 30 (single threaded on a normal laptop with a 2-year-old i7 processor).
+It is also noticeable, for the provided 50 fasta sample file, that the running time increased when k is getting larger. This holds true at least when k is still relatively small (20-30) than the ~1000 length of the fasta records. It may take <1 minute to finish if k = 20, and similarly or slightly longer to finish at 30 (single threaded on a normal laptop with a 2-year-old i7 processor).
 
 ###Some Assumptions
 1. The sequences are DNA (ATCG bases) "perfect" sequences; No ambiguous base reads.
