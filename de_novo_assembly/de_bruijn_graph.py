@@ -63,7 +63,7 @@ class Kmer():
 
 
 class DeBruijnGraph():
-    """A de Bruijn Graph is a multigraph built from a collection of strings
+    """A de Bruijn Graph is a digraph built from a collection of strings
     feed from input and k-mer length k. Nodes of DBG are
      (k-1)-mers and edges join a left k-1-mer to a right k-1-mer is the
      k-mer itself. """
@@ -147,8 +147,7 @@ class DeBruijnGraph():
         2. if not, create the node, but also get the node for later
         3. repeat above for the r node (k-1 suffix of kmer)
         4. Add an edge with both l and r node
-        So each kmer has one edge and as a multi graph, it is allowed to
-        have mroe than one edge between any two nodes
+        So each kmer has one edge and as a directed graph.
         Please be noted that two attributes start and end, were appended to
         each node added to the DBG -- these were to track the beginning and
         end of any Euler path if exists.
