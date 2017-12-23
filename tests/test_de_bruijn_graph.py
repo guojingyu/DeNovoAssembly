@@ -35,7 +35,6 @@ class KmerTests(unittest.TestCase):
 
 
 class DeBruijnGraphTests(unittest.TestCase):
-
     def setUp(self):
         self.sequence_1 = "ATTAGACCTG"
 

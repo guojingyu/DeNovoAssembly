@@ -10,9 +10,6 @@ import unittest
 from de_novo_assembly.run import run
 
 class DummySampleTests(unittest.TestCase):
-    """
-
-    """
     def setUp(self):
         self.reference_assembly = "ATTAGACCTGCCGGAATAC"
 

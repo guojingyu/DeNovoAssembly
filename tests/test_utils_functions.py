@@ -13,7 +13,6 @@ from de_novo_assembly.utils import get_sequences_from_fasta_file, include_revers
 
 
 class FastaFileReadTests(unittest.TestCase):
-
     def setUp(self):
         self.fasta_file_1 = "../data/coding_challenge_data_set.fasta"
         self.fasta_record_dict = get_sequences_from_fasta_file(self.fasta_file_1)
@@ -37,7 +36,6 @@ class FastaFileReadTests(unittest.TestCase):
 
 
 class ReverseComplementReadTests(unittest.TestCase):
-
     def setUp(self):
         self.fasta_file_1 = "../data/coding_challenge_data_set.fasta"
         self.sequence_1 = "ATCGGTCTGA"
