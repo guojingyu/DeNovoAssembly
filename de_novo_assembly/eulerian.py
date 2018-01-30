@@ -79,7 +79,6 @@ def eulerian_random_walk(DBG):
     :return: dictionary containing a list of edges that represents the
     assembly of the genome, each is a contig
     """
-
     assembly = []
     for subg in DBG.subgraphs:
         # nx eulerian assumes strong connection for directed graph
