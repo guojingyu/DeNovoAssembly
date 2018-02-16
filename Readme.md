@@ -1,10 +1,10 @@
-##DNA Sequence De Novo Assembly
+## DNA Sequence De Novo Assembly
 
 This repo contains an implementation of a solution to DNA sequence assembly problem. The is based on Euler Walk on De Bruijn Graph constructed using kmer representation. 
 
 (For further details, please read docs/Description.md)
 
-###Prerequisites
+### Prerequisites
 The following only represents one possible set of versions of required libraries, which is used in development.
 ```
 python == 2.7.11
@@ -15,7 +15,7 @@ networkx == 1.11
 matplotlib == 1.5.3
 ```
 
-###How to run the code
+### How to run the code
 To run the dummy_data.fasta:  
 ```
 python ./de_novo_assembly/run.py -i ./data/dummy_data.fasta -k 5 -o ./output/dummy_data_assembly_output.txt --print_to_console
